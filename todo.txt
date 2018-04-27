@@ -1,0 +1,8 @@
+Store data in CSV, 
+Stock drop-down, draw daily stock price graph
+Buttons on side for indicators (MACD, etc)
+Draw these on top of line graph, or adjacent to, depending
+
+For report: how to use our visualization to determine the predictive accuracy of these technical indicators
+
+(Data from Alpha Vantage)
