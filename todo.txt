@@ -6,3 +6,15 @@ Draw these on top of line graph, or adjacent to, depending
 For report: how to use our visualization to determine the predictive accuracy of these technical indicators
 
 (Data from Alpha Vantage)
+
+# data file format:
+- /data/{company}/{attribute}/{value}.csv:
+  date,value
+  2016-02-02,-.05
+
+# hunter will:
+- parse all data into files
+- add widget with company/date filter
+- draw graph for:
+    - 'goog', 'TIME_SERIES_DAILY_ADJUSTED', 'adjusted_close'
+        - file: /data/goog/TIME_SERIES_DAILY_ADJUSTED/adjusted_close.csv
