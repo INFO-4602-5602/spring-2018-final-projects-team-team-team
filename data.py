@@ -16,7 +16,7 @@ def load_sp_data(table=None, fname=None):
 def write_data(data):
     """
     writes files in
-    - /data/{company}/{attribute}/{value}.csv:
+    - /data/{company}/{stat_type}/{stat}.csv:
     """
     for company in data.keys():
         company_path = os.path.join("data", company)
@@ -36,8 +36,10 @@ def write_data(data):
 
             # write each stat
             for stat in stats:
+                # header
                 stat_data = [("date","value")]
 
+                # append stat datum sorted by date as (date, value) tuple
                 for date in sorted(data[company][stat_type].keys()):
                     value = data[company][stat_type][date][stat]
                     stat_data.append((date, value))
@@ -46,26 +48,6 @@ def write_data(data):
                 with open(stat_path, 'w') as f:
                     for line in stat_data:
                         f.write(f"{line[0]},{line[1]}\n")
-
-
-
-
-
-
-
-
-            # keys = 
-
-            # for stat in data[company]
-
-            
-
-
-    # print(data.keys())
-    # print(data['msft'].keys())
-    # print(data['msft']['MACD']['2016-02-02']['MACD'])
-    # print(data['msft']['TIME_SERIES_DAILY_ADJUSTED']['2016-02-02'].keys())
-
 
 
 if __name__ == '__main__':
