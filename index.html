@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>Project 3</title>
+<link type="text/css" href="style.css" rel="stylesheet"></link>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <h1>Vis 2</h1>
+        <div id="vis2">
+            <div id="visualization"> </div>
+            <div id="vis2-buttons">
+                <p>Company</p>
+                <select id="company-select" onchange=set_stat_types()></select>
+                <p>Stat Type</p>
+                <select id="stat-type-select" onchange=set_stats_list()></select>
+                <p>Stat</p>
+                <select id="stat-select" onchange=set_year(true);set_year(false);></select>
+
+                <p>start</p>
+                <select id="start-years-select" onchange=set_month(true)></select>
+                <select id="start-months-select" onchange=set_day(true)></select>
+                <select id="start-days-select" onchange=make_plot()></select>
+
+                <p>end</p>
+                <select id="end-years-select" onchange=set_month(false)></select>
+                <select id="end-months-select" onchange=set_day(false)></select>
+                <select id="end-days-select" onchange=make_plot()></select>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="project.js"></script>
+</body>
+</html>

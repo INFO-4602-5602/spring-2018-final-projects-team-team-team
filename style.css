@@ -1,0 +1,23 @@
+body {
+}
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    pointer-events: none;
+}
+
+#vis2 {
+    display: flex;
+}
+
+#vis2-buttons {
+    margin-top: 100px;
+    flex-grow: 1;
+}
+
+#visualization {
+    height: 800;
+    width: 800;
+    display: inline;
+}
