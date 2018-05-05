@@ -449,7 +449,7 @@ function make_plot() {
 				.attr("stroke", "orange")
 				.attr("stroke-width", 1.5)
 				.attr("d", lineFunction);
-		} else if (line_select == "interpolation") {
+		} else if (line_select == "curve-fit") {
 			svg.append("path")
 				.datum(filtered)
 				.attr("clas", "line")
