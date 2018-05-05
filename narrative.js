@@ -1,11 +1,24 @@
 ////////////////////////////////////////////////////////////
 // CONSTANTS
 ////////////////////////////////////////////////////////////
+var glob_x;
+var glob_y;
+var lowdata;
+var closedata;
+var highdata;
 
-make_vis1_plot()
+make_vis1_plot();
 
 function add_vis1_line(path, svg, color, locGetScaledX, locGetScaledY, height, parsed_start, parsed_end) {
     d3.csv(path, function(error, data) {
+        if (path.includes("low")) {
+          lowdata = data;
+        } else if (path.includes("close")) {
+          closedata = data;
+        } else if (path.includes("high")) {
+          highdata = data;
+        }
+
         data.forEach(function(d) {
             d.date = parseTime(d.date);
             d.value = +d.value;
@@ -75,6 +88,8 @@ function make_vis1_plot() {
     // var x = d3.scaleLinear().range([0, width]);
     var locx = d3.scaleTime().range([0, width]);
     var locy = d3.scaleLinear().range([height, 0]);
+    glob_x = locx
+    glob_y = locy
 
     // these functions retrieve the appropriate values for the given
     // element for the appropriately set scale
@@ -148,11 +163,62 @@ function make_vis1_plot() {
             .attr("stroke-linecap", "round")
             .attr("stroke-width", 2.0)
             .attr("d", line);
+        svg.append("rect")
+            .attr("class", "overlay")
+            .attr("width", width)
+            .attr("height", height)
+            .on("mouseover", handleGraphMouseoverEvent)
+            .on("mouseout", handleGraphMouseoutEvent)
+            .on("mousemove", handleGraphMousemove);
 
         var path1 = "./data/aapl/TIME_SERIES_DAILY_ADJUSTED/close.csv"
         var path2 = "./data/aapl/TIME_SERIES_DAILY_ADJUSTED/low.csv"
         add_vis1_line(path1, svg, "red", locGetScaledX, locGetScaledY, height, parsed_start, parsed_end);
         add_vis1_line(path2, svg, "gray", locGetScaledX, locGetScaledY, height, parsed_start, parsed_end);
+
+        if (path.includes("low")) {
+          lowdata = data;
+        } else if (path.includes("close")) {
+          closedata = data;
+        } else if (path.includes("high")) {
+          highdata = data;
+        }
+
     });
+}
+
+function handleGraphMouseoverEvent(d, i) {
+    handleGraphMousemove(d, i);
+}
+
+function handleGraphMouseoutEvent(d, i) {
+    // outline on mousover
+    d3.select("body #tooltip")
+        .style("opacity", 0)
+        .style("left", "0px")
+        .style("top", "0px");
+}
+
+function dataBisector(data, i) {
+  var b = d3.bisector(function(d) { return d.date; });
+  return b.left(data, i);
+}
+
+/* CODE CREDIT FOR MOUSEMOVE: Mike Bostock, https://bl.ocks.org/mbostock/3902569 */
+function handleGraphMousemove(d, i) {
+    coordinates = d3.mouse(this);
+    var x = coordinates[0];
+    var y = coordinates[1];
+    var x0 = glob_x.invert(d3.mouse(this)[0]);
+    low = dataBisector(lowdata, x0);
+    close = dataBisector(closedata, x0);
+    high = dataBisector(highdata, x0);
+    d3.select("body #tooltip")
+      .style("opacity", 0.8)
+      .style("left", (d3.event.pageX + 5) + "px")
+      .style("top", (d3.event.pageY + 5) + "px");
+    d3.select("body #tooltip")
+      .html("<p style='margin:0px;'>Low: " + lowdata[low].value + "<br />High: " + highdata[high].value + "<br /><b>Close: " + closedata[close].value + "</b></p>");
+
 }
 
