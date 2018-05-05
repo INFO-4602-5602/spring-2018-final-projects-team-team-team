@@ -114,6 +114,9 @@ function get_path(type, start) {
     var path = data_path;
     path +='/';
 
+    if (type == 'trendlines_list')
+        return path + 'trendlines.json';
+
     if (type == 'companies_list')
         return path + 'companies.json';
 
@@ -247,8 +250,73 @@ function get_date_range(start) {
     return year + '-' + month + '-' + day;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// set_trendline_list
+//
+// initializes/handles changes for trendline_list
+////////////////////////////////////////////////////////////////////////////////
+function set_trendline_list() {
+    return $.getJSON(get_path('trendlines_list'), function(trendline_list) {
+		console.log(trendline_list)
+        add_options_to_selectbox('trendline-select', trendline_list);
+    });
+}
+
+function add_trendline(data) {
+	console.log("Add trendline for:") 
+	console.log(data)
+	var x_mean = 0;
+	var y_mean = 0;
+	var term1 = 0;
+	var term2 = 0;
+
+	var n = data.length;
+	var n = 10;
+	for (var i=0; i<n; i++) {
+		x_mean += parseTime(data[i].date)
+		console.log(parseTime(data[i].date))
+		console.log(data[i].date)
+		y_mean += data[i].value
+	}
+	x_mean /= n;
+	y_mean /= n;
+	console.log("X_mean: " + x_mean)
+	console.log("Y_mean: " + y_mean)
+
+	// Coeff
+	var xr = 0;
+	var yr = 0;
+	for (i=0; i<n; i++) {
+		xr = parseTime(data[i].date) - x_mean;
+		yr = data[i].value - y_mean;
+		term1 += xr * yr;
+		term2 += xr * xr;
+	}
+	var b1 = term1 / term2;
+	var b0 = y_mean - (b1 * x_mean);
+
+	// Regression
+	yhat = [];
+	for (i=0; i<n; i++) {
+		yhat.push(b0 + (i * b1));
+	}
+
+	var trendline = [];
+	for (i=0; i<n; i++) {
+		trendline.push({
+			"yhat": yhat[i],
+			"y": data[i].value,
+			"x": parseTime(data[i].date)
+		})
+	}
+
+	console.log(trendline)
+	return (trendline);
+}
+
 // the way I've nested the functions means this call sets everything up. :)
 set_companies();
+set_trendline_list();
 
 // do actual drawing here
 function make_plot() {
@@ -287,6 +355,7 @@ function make_plot() {
 
         x.domain(d3.extent(filtered, getX));
         y.domain(d3.extent(filtered, getY));
+		add_trendline(data)
 
         svg = getSVGWithLabelsAndAxes('#visualization', x, y, title, "date", stat);
 
@@ -328,6 +397,7 @@ function make_plot() {
             .attr("cx", getScaledX)
             .attr("cy", getScaledY)
             .attr("r", 2)
+			.style("fill", "blue")
     });
 }
 
