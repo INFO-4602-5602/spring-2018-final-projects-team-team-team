@@ -31,7 +31,11 @@
                 <select id="end-days-select" onchange=make_plot()></select>
 
                 <p>Add trendline</p>
-                <select id="trendline-select" onchange=add_trendline()></select>
+                <select id="trendline-select" onchange=update_trendline(value)>
+					<option value="none" >none</option>
+					<option value="linear">linear</option>
+					<option value="interpolation">interpolation</option>
+				</select>
             </div>
         </div>
     </div>

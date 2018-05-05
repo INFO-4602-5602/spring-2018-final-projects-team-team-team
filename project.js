@@ -29,9 +29,11 @@ var y = d3.scaleLinear().range([height, 0]);
 var getScaledX = function(d) { return x(d[xVal]); };
 var getScaledY = function(d) { return y(d[yVal]); };
 
+var line_select = "none";
 var lineFunction = d3.line()
 	.x(function(d) { return x(d[xVal]); })
-	.y(function(d) { return y(d[yVal]); });
+	.y(function(d) { return y(d[yVal]); })
+	.curve(d3.curveLinear);
 
 var svg;
 
@@ -265,7 +267,13 @@ function set_trendline_list() {
     });
 }
 
-function add_trendline(data) {
+function update_trendline(selection) {
+	console.log(selection)
+	line_select = selection;
+	make_plot();
+}
+
+function add_trendline(data) { 
 	var x_mean = 0;
 	var y_mean = 0;
 	var term1 = 0;
@@ -314,24 +322,6 @@ function add_trendline(data) {
 
 	//console.log("Trendline: " + trendline[0].value)
 	return (trendline);
-}
-
-var drawline = function(data) {
-	var xValues = data.map(function(d) { return d.date;});
-	var yValues = data.map(function(d) { return d.value;});
-	var lsCoef = [LeastSquares(xValues, yValues)];
-	//console.log("lsCoef: " + yValues)
-
-	var lineFunction = d3.line()
-		.x(function(d) { return d.date; })
-		.y(function(d) { return d.value; });
-
-	svg
-		.append('path')
-		.attr("d", lineFunction([{"x": 50, "y": lsCoef[0].m * 50 + lsCoef[0].b},{"x": 450, "y": lsCoef[0].m * 450 + lsCoef[0].b}]))
-	    .attr("stroke-width", 2)
-		.attr("stroke", "black")
-		.attr('id', 'regline');
 }
 
 // the way I've nested the functions means this call sets everything up. :)
@@ -420,20 +410,33 @@ function make_plot() {
             .attr("r", 2)
 			.style("fill", "blue")
 
-		/*var trendplot = svg.selectAll(".trendline")
-			.data(trendline);
-		trendplot.enter()
-			.append("line")
-			.attr("class", "trendline");*/
+		// Add trendline
+		if (line_select == "none") { 
+			svg.append("path")
+				.datum(trendline)
+				.attr("clas", "line")
+				.attr("fill", "none")
+				.attr("stroke", "orange")
+				.attr("stroke-width", 0)
+				.attr("d", lineFunction);
+		} else if (line_select == "linear") {
+			svg.append("path")
+				.datum(trendline)
+				.attr("clas", "line")
+				.attr("fill", "none")
+				.attr("stroke", "orange")
+				.attr("stroke-width", 1.5)
+				.attr("d", lineFunction);
+		} else if (line_select == "interpolation") {
+			svg.append("path")
+				.datum(filtered)
+				.attr("clas", "line")
+				.attr("fill", "none")
+				.attr("stroke", "orange")
+				.attr("stroke-width", 1.5)
+				.attr("d", lineFunction);
 
-		//console.log(lineFunction(trendline));
-		svg.append("path")
-			.datum(trendline)
-			.attr("clas", "line")
-			.attr("fill", "none")
-			.attr("stroke", "orange")
-			.attr("stroke-width", 1.5)
-			.attr("d", lineFunction);
+		}
     });
 }
 
