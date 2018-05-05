@@ -4,6 +4,7 @@
 <link type="text/css" href="style.css" rel="stylesheet"></link>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="leastsquares.js"></script>
 </head>
 
 <body>
@@ -45,7 +46,11 @@
                 <select id="end-days-select" onchange=make_plot()></select>
 
                 <p>Add trendline</p>
-                <select id="trendline-select" onchange=add_trendline()></select>
+                <select id="trendline-select" onchange=update_trendline(value)>
+					<option value="none" >none</option>
+					<option value="linear">linear</option>
+					<option value="interpolation">interpolation</option>
+				</select>
             </div>
         </div>
     </div>

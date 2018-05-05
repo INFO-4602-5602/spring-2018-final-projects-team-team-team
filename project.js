@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// CONSTANTS
+// CONSTANTS 
 ////////////////////////////////////////////////////////////////////////////////
 var data_path = "./data";
 
@@ -28,6 +28,12 @@ var y = d3.scaleLinear().range([height, 0]);
 // element for the appropriately set scale
 var getScaledX = function(d) { return x(d[xVal]); };
 var getScaledY = function(d) { return y(d[yVal]); };
+
+var line_select = "none";
+var lineFunction = d3.line()
+	.x(function(d) { return x(d[xVal]); })
+	.y(function(d) { return y(d[yVal]); })
+	.curve(d3.curveLinear);
 
 var svg;
 
@@ -257,25 +263,26 @@ function get_date_range(start) {
 ////////////////////////////////////////////////////////////////////////////////
 function set_trendline_list() {
     return $.getJSON(get_path('trendlines_list'), function(trendline_list) {
-		console.log(trendline_list)
         add_options_to_selectbox('trendline-select', trendline_list);
     });
 }
 
-function add_trendline(data) {
-	console.log("Add trendline for:")
-	console.log(data)
+function update_trendline(selection) {
+	console.log(selection)
+	line_select = selection;
+	make_plot();
+}
+
+function add_trendline(data) { 
 	var x_mean = 0;
 	var y_mean = 0;
 	var term1 = 0;
 	var term2 = 0;
 
 	var n = data.length;
-	var n = 10;
+	//var n = 10;
 	for (var i=0; i<n; i++) {
-		x_mean += parseTime(data[i].date)
-		console.log(parseTime(data[i].date))
-		console.log(data[i].date)
+		x_mean += i
 		y_mean += data[i].value
 	}
 	x_mean /= n;
@@ -287,7 +294,7 @@ function add_trendline(data) {
 	var xr = 0;
 	var yr = 0;
 	for (i=0; i<n; i++) {
-		xr = parseTime(data[i].date) - x_mean;
+		xr = i;
 		yr = data[i].value - y_mean;
 		term1 += xr * yr;
 		term2 += xr * xr;
@@ -304,13 +311,16 @@ function add_trendline(data) {
 	var trendline = [];
 	for (i=0; i<n; i++) {
 		trendline.push({
-			"yhat": yhat[i],
-			"y": data[i].value,
-			"x": parseTime(data[i].date)
+			"value": yhat[i],
+			//"y": data[i].value,
+			"date": data[i].date
 		})
 	}
 
+	console.log("TRENDLINE: ")
 	console.log(trendline)
+
+	//console.log("Trendline: " + trendline[0].value)
 	return (trendline);
 }
 
@@ -356,11 +366,12 @@ function make_plot() {
 
         x.domain(d3.extent(filtered, getX));
         y.domain(d3.extent(filtered, getY));
-		add_trendline(data)
+		var trendline = add_trendline(filtered);
+		console.log("Trend: " + trendline[0].date)
 
         svg = getSVGWithLabelsAndAxes('#visualization', x, y, title, "date", stat, margin, width, height, "visvis");
 
-        // gridlines code credit to:
+        // gridlines code credit to: 
         // https://bl.ocks.org/d3noob/c506ac45617cf9ed39337f99f8511218
         // gridlines in x axis function
         function make_x_gridlines() {
@@ -375,13 +386,13 @@ function make_plot() {
         }
 
         // add the X gridlines
-        // svg.append("g")
-        //     .attr("class", "grid")
-        //     .attr("transform", "translate(0," + height + ")")
-        //     .call(make_x_gridlines()
-        //         .tickSize(-height)
-        //         .tickFormat("")
-        //     )
+        svg.append("g")
+            .attr("class", "grid")
+            .attr("transform", "translate(0," + height + ")")
+            .call(make_x_gridlines()
+                .tickSize(-height)
+                .tickFormat("")
+            )
 
         // add the Y gridlines
         svg.append("g")
@@ -398,6 +409,7 @@ function make_plot() {
           color = "green";
         }
 
+        /* 
         // plot a linegraph
         var line = d3.line()
                       .x(getScaledX)
@@ -410,6 +422,43 @@ function make_plot() {
             .attr("stroke-linecap", "round")
             .attr("stroke-width", 2.0)
             .attr("d", line);
+            */
+        svg.selectAll("vis2_dot")
+            .data(filtered)
+            .enter()
+            .append("circle")
+            .attr("cx", getScaledX)
+            .attr("cy", getScaledY)
+            .attr("r", 2)
+			.style("fill", "blue")
+
+		// Add trendline
+		if (line_select == "none") { 
+			svg.append("path")
+				.datum(trendline)
+				.attr("clas", "line")
+				.attr("fill", "none")
+				.attr("stroke", "orange")
+				.attr("stroke-width", 0)
+				.attr("d", lineFunction);
+		} else if (line_select == "linear") {
+			svg.append("path")
+				.datum(trendline)
+				.attr("clas", "line")
+				.attr("fill", "none")
+				.attr("stroke", "orange")
+				.attr("stroke-width", 1.5)
+				.attr("d", lineFunction);
+		} else if (line_select == "interpolation") {
+			svg.append("path")
+				.datum(filtered)
+				.attr("clas", "line")
+				.attr("fill", "none")
+				.attr("stroke", "orange")
+				.attr("stroke-width", 1.5)
+				.attr("d", lineFunction);
+
+		}
     });
 }
 
@@ -422,7 +471,7 @@ function make_plot() {
 // 4. a graph label
 // 5. an x label
 // 6. an y label
-//
+// 
 // it does the gruntwork of:
 // - making the svg the right size
 // - adding the x- and y-axes to the graph
@@ -446,19 +495,19 @@ function getSVGWithLabelsAndAxes(element, x_axis, y_axis, label, x_label, y_labe
 
     if (label) {
         svg.append("text")
-            .attr("x", (width / 2))
+            .attr("x", (width / 2))             
             .attr("y", 0 - (margin.top / 3))
-            .attr("text-anchor", "middle")
-            .style("font-size", "16px")
-            .style("text-decoration", "underline")
+            .attr("text-anchor", "middle")  
+            .style("font-size", "16px") 
+            .style("text-decoration", "underline")  
             .text(label);
     }
 
     // credit for fancy axis labels: https://bl.ocks.org/d3noob/23e42c8f67210ac6c678db2cd07a747e
     // text label for the x axis
-    svg.append("text")
+    svg.append("text")             
         .attr("transform",
-                "translate(" + (width/2) + " ," +
+                "translate(" + (width/2) + " ," + 
                             (height + margin.top - 20) + ")")
         .style("text-anchor", "middle")
         .text(x_label);
@@ -470,7 +519,7 @@ function getSVGWithLabelsAndAxes(element, x_axis, y_axis, label, x_label, y_labe
         .attr("x", 0 - (height / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text(y_label);
+        .text(y_label);      
 
 
     return svg;

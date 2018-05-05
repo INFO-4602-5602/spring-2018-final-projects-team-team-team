@@ -21,3 +21,8 @@ body {
     width: 800;
     display: inline;
 }
+
+.line {
+	stroke: #E4002B;
+	fille: none;
+	stroke-width: 3;
