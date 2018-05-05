@@ -29,6 +29,10 @@ var y = d3.scaleLinear().range([height, 0]);
 var getScaledX = function(d) { return x(d[xVal]); };
 var getScaledY = function(d) { return y(d[yVal]); };
 
+var lineFunction = d3.line()
+	.x(function(d) { return x(d[xVal]); })
+	.y(function(d) { return y(d[yVal]); });
+
 var svg;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -257,25 +261,20 @@ function get_date_range(start) {
 ////////////////////////////////////////////////////////////////////////////////
 function set_trendline_list() {
     return $.getJSON(get_path('trendlines_list'), function(trendline_list) {
-		console.log(trendline_list)
         add_options_to_selectbox('trendline-select', trendline_list);
     });
 }
 
 function add_trendline(data) {
-	console.log("Add trendline for:") 
-	console.log(data)
 	var x_mean = 0;
 	var y_mean = 0;
 	var term1 = 0;
 	var term2 = 0;
 
 	var n = data.length;
-	var n = 10;
+	//var n = 10;
 	for (var i=0; i<n; i++) {
-		x_mean += parseTime(data[i].date)
-		console.log(parseTime(data[i].date))
-		console.log(data[i].date)
+		x_mean += i
 		y_mean += data[i].value
 	}
 	x_mean /= n;
@@ -287,7 +286,7 @@ function add_trendline(data) {
 	var xr = 0;
 	var yr = 0;
 	for (i=0; i<n; i++) {
-		xr = parseTime(data[i].date) - x_mean;
+		xr = i;
 		yr = data[i].value - y_mean;
 		term1 += xr * yr;
 		term2 += xr * xr;
@@ -304,14 +303,35 @@ function add_trendline(data) {
 	var trendline = [];
 	for (i=0; i<n; i++) {
 		trendline.push({
-			"yhat": yhat[i],
-			"y": data[i].value,
-			"x": parseTime(data[i].date)
+			"value": yhat[i],
+			//"y": data[i].value,
+			"date": data[i].date
 		})
 	}
 
+	console.log("TRENDLINE: ")
 	console.log(trendline)
+
+	//console.log("Trendline: " + trendline[0].value)
 	return (trendline);
+}
+
+var drawline = function(data) {
+	var xValues = data.map(function(d) { return d.date;});
+	var yValues = data.map(function(d) { return d.value;});
+	var lsCoef = [LeastSquares(xValues, yValues)];
+	//console.log("lsCoef: " + yValues)
+
+	var lineFunction = d3.line()
+		.x(function(d) { return d.date; })
+		.y(function(d) { return d.value; });
+
+	svg
+		.append('path')
+		.attr("d", lineFunction([{"x": 50, "y": lsCoef[0].m * 50 + lsCoef[0].b},{"x": 450, "y": lsCoef[0].m * 450 + lsCoef[0].b}]))
+	    .attr("stroke-width", 2)
+		.attr("stroke", "black")
+		.attr('id', 'regline');
 }
 
 // the way I've nested the functions means this call sets everything up. :)
@@ -355,7 +375,8 @@ function make_plot() {
 
         x.domain(d3.extent(filtered, getX));
         y.domain(d3.extent(filtered, getY));
-		add_trendline(data)
+		var trendline = add_trendline(filtered);
+		console.log("Trend: " + trendline[0].date)
 
         svg = getSVGWithLabelsAndAxes('#visualization', x, y, title, "date", stat);
 
@@ -390,7 +411,7 @@ function make_plot() {
                 .tickFormat("")
             )
 
-        svg.selectAll(".vis2-dot")
+        svg.selectAll("vis2_dot")
             .data(filtered)
             .enter()
             .append("circle")
@@ -398,6 +419,21 @@ function make_plot() {
             .attr("cy", getScaledY)
             .attr("r", 2)
 			.style("fill", "blue")
+
+		/*var trendplot = svg.selectAll(".trendline")
+			.data(trendline);
+		trendplot.enter()
+			.append("line")
+			.attr("class", "trendline");*/
+
+		//console.log(lineFunction(trendline));
+		svg.append("path")
+			.datum(trendline)
+			.attr("clas", "line")
+			.attr("fill", "none")
+			.attr("stroke", "orange")
+			.attr("stroke-width", 1.5)
+			.attr("d", lineFunction);
     });
 }
 
