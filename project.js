@@ -327,6 +327,7 @@ function make_plot() {
     var end = get_date_range(false);
 
     var path = get_path('data');
+    console.log(path)
 
     d3.csv(path, function(error, data) {
         data.forEach(function(d) {
@@ -357,7 +358,7 @@ function make_plot() {
         y.domain(d3.extent(filtered, getY));
 		add_trendline(data)
 
-        svg = getSVGWithLabelsAndAxes('#visualization', x, y, title, "date", stat);
+        svg = getSVGWithLabelsAndAxes('#visualization', x, y, title, "date", stat, margin, width, height, "visvis");
 
         // gridlines code credit to:
         // https://bl.ocks.org/d3noob/c506ac45617cf9ed39337f99f8511218
@@ -389,6 +390,13 @@ function make_plot() {
                 .tickSize(-width)
                 .tickFormat("")
             )
+        var color;
+        if (filtered[filtered.length-1].value <= filtered[0].value) {
+          color = "red";
+        }
+        else {
+          color = "green";
+        }
 
         // plot a linegraph
         var line = d3.line()
@@ -397,7 +405,7 @@ function make_plot() {
         svg.append("path")
             .datum(filtered)
             .attr("fill", "none")
-            .attr("stroke", "steelblue")
+            .attr("stroke", color)
             .attr("stroke-linejoin", "round")
             .attr("stroke-linecap", "round")
             .attr("stroke-width", 2.0)
@@ -419,9 +427,9 @@ function make_plot() {
 // - making the svg the right size
 // - adding the x- and y-axes to the graph
 // - labelling those axes
-function getSVGWithLabelsAndAxes(element, x_axis, y_axis, label, x_label, y_label) {
+function getSVGWithLabelsAndAxes(element, x_axis, y_axis, label, x_label, y_label, margin, width, height, svg_id) {
     var svg = d3.select(element).append("svg")
-        .attr("id", "visvis")
+        .attr("id", svg_id)
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
