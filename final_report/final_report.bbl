@@ -32,4 +32,16 @@ J.~Joseph and I.~Indratmo.
 \newblock Visualizing stock market data with self-organizing map.
 \newblock pp. 488--491, 01 2013.
 
+\bibitem{storytelling}
+K.~L. Ma, I.~Liao, J.~Frazier, H.~Hauser, and H.~N. Kostis.
+\newblock Scientific storytelling using visualization.
+\newblock {\em IEEE Computer Graphics and Applications}, 32(1):12--19, Jan
+  2012. doi: {{%
+10\hspace{.1pt}\discretionary{.}{%
+}{.}\hspace{.4pt}1109\discretionary{/}{%
+}{/}MCG\hspace{.1pt}\discretionary{.}{%
+}{.}\hspace{.4pt}2012\hspace{.1pt}\discretionary{.}{%
+}{.}\hspace{.4pt}24}}
+
+
 \end{thebibliography}

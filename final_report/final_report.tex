@@ -191,18 +191,53 @@ and adjusted close prices of an array of dates. We then used a variety of other 
 EMA, STOCH, RSI, MACD technical indicators. We decided upon these indicators after researching commonly used analysis tools on investopedia.com \cite{invest}.  All of this data was stored into a python dictionary and then
 outputted into json files. The json files are read in with javascript and displayed using D3.  We chose to work with D3 because we were very comfortable with making two dimensional plots out of loaded json data and as a programmer, you have a lot of control over particular aspects of the data.
 
-\subsection{Visualization 1: Learning Tool}
-
-\subsection{Visualization 2: Analysis Tool}
-After our research, we knew that the most practical visualization tools used two dimensional scatter/line plots in order to plot time series data.  We decided to use both for all of the different data types we gathered. We wanted to give the user the ability to drill down to any type of technical indicator or price and plot a range of data from the dataset.  This is done by selecting categorical data in option boxes next to the visualization.  
-
-There is also the option
+\subsection{Visualization 1: Narrative Introduction}
+We wanted to leverage what we learned about data narratives/storytelling in Week 15 here, to take something which is normally dry and help draw the subject in. We drew on ideas from \cite{storytelling} to first set the stage, introduce the characters, and tell a memorable story. The stage is the world of stocks and public companies, the characters are the data and the technical indicators, and the story we're trying to tell is that these indicators have questionable predictive power -- as the saying goes, "Past performance is no guarantee of future results!" To lay out the narrative, we did a brief sketch of a storyboard, but this is a simple narrative so the storyboard was overkill. At the end, we wanted to also give the reader a chance to play with what they learned in a free-form format, so Visualization 2 is a flexible exploration tool that doesn't strictly fit in the narrative format.
 
 \begin{figure}[h]
 	\centering
-	%\includegraphics[scale=0.65]{vis2}
-	%\caption{}
+	\includegraphics[scale=0.4]{vis1}
+	\caption{This depiction is the first visualization that is shown within our narrative introduction process.}
 \end{figure}
+
+\subsection{Visualization 2: Analysis Tool}
+After our research, we knew that the most practical visualization tools used two dimensional scatter/line plots in order to plot time series data.  We decided to use both for all of the different data types we gathered. We wanted to give the user the ability to drill down to any type of technical indicator or price and plot a range of data from the dataset.  Selecting the technical indicator is done by selecting one of the five buttons displayed immediately above the graph.  To the right of the graph, option boxes are shown and allow the user to select different stocks, price time series, time range, and trendlines.    
+
+When one of the five technical indicator buttons are selected, a series is either drawn on top of the price or a new graph is generated based on the scale of the technical indicator.  This was done in hopes that the user would be able to more easily discern the information.  When any of the options are selected in the option boxes to the right of the visualization, a new time series of prices is loaded from a json file and drawn over the visualization space.
+
+With the basic stock plotting working, we wanted to add a supplement that would be useful. The
+trendline drop down menu offers 'none',
+'linear', or 'curve-fit' views. The selection is caught by triggering an on-change event to
+update an internal variable in the javascript. A function is called by the change event that
+also calls the make\_plot() function so that the appropriate trend line can be drawn. For the linear
+fit, an intermediary function was required to generate the linear points. The mean of the orginally
+view-filtered data is calculated and then a y\_hat value is calculated based on the overall trend. This
+is the same function called for the curve fit, but when the filtered data is passed through to the
+same function a fitted curve is maintained. A lineFunction was defined to use the d3.curveLinear()
+to plot the line. To populate the drop down menu, another function was written to grab the appropriate
+values from the data/trendlines.json file. More trendlines may be added here, but these are the two
+implemented. The next trendline to implement may have been a rate-of-change curve, or even a trend
+prediction, but these would require additional mathematic and statistical functions which would
+take much more time to implement.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.39]{vis2}
+	\caption{This depiction shows the default screen for the visualization tool that we developed.  On the right hand side, the option boxes are available for the user to select a company, drilled down statistic, time range, and trendline.}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{vis2_menu}
+	\caption{This depiction shows the menu for the different technical indicators that we have available for each of our 6 stocks.  Clicking on the button draws the technical indicator either on the stock price graph or on a separate graph depending on the scale.}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.4]{vis2_1}
+	\caption{This depiction shows examples of two of the different technical indicator graphs that are drawn below the stock price graph if their respective option is selected in the menu.}
+\end{figure}
+
+
 
 
 \section{Discussion}
