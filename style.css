@@ -54,11 +54,11 @@ body {
     height: 600;
 }
 
-#vis1 {
+.narr_vis {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 50%;
+  width: 800px;
 }
 
 #final_project {

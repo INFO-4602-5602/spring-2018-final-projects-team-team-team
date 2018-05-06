@@ -16,20 +16,30 @@
         <p>When the market opens each day, the stock price goes up and down according to supply and demand. For example, if lots of people want to buy a stock for a higher price than before, the stock price goes up. A graph of the stock price can show the daily high, daily low, and closing value. The following chart shows the price of Apple Inc's stock (AAPL) for a 30-day period. The middle line shows the closing price, and the high and low are shown as the shaded region. Hover over to see the prices for that day.</p>
 
         <div id="vis1">
-            <div id="pricevis"></div>
+            <div id="pricevis" class="narr_vis"></div>
         </div>
 
         <p>Sometimes, people use the stock market to speculate. That is, they aren't interested in the health of the company and in investing, so much as they are interested in betting if the stock will go up or down. If they bet correctly, they can make massive profit.
-        <p><b>Technical analysis</b> runs equations and statistics on a company's stock price history in order to try to predict which direction it will move. The problem is that historical price</p>
+        <p><b>Technical analysis</b> runs equations and statistics on a company's stock price history in order to try to predict which direction it will move. The problem is that just because a company did well in the past doesn't necessarily mean they will continue to do well -- and vice-versa. As every stock book, website, or prospectus will tell you: "Past performance is no guarantee of future of future results."</p>
+
         <h3 id="tech_inds">Technical Indicators</h3>
         <h4>SMA</h4>
         <p>Simple moving average (SMA) is a statistic of a stock that gives an indication of a time period's trend in the upward or downward direction.  The process of calculating a simple moving average is summing all of the closing prices in a certain time interval and dividing by the number of prices.  It is a value that can be tweaked by analysts in order to smooth out the data.  As the time interval increases, the SMA shows a much smoother representation of the source data whereas decreasing the time interval shows a "closer" representation of the source data.
 SMAs are excellent indicators of upward and downward trends in data and analysts employ different trading techniques utilizing SMAs.  One popular trend is the death cross where the fifty day SMA crosses below the two hundred day SMA.  It is considered to indicate a downward trend and analysts are inclined to sell.
 </p>
+
+        <div id="vis3">
+            <div id="smavis" class="narr_vis"></div>
+        </div>
+
         <h4>EMA</h4>
         <p>Exponential moving average (EMA) is a similar statistic to SMA but more heavily weights recent prices in the average.  In order to calculate an exponential EMA, the SMA is first calculated and used as its initial value.  For each day in the time interval,  a weighting factor is found and a percentage of the last EMA value is added to the current EMA value.
 Because of the addition of heavy recent price weights, the EMA is more sensitive to the source data and will not smooth out the data as well as the SMA.
         </p>
+
+        <div id="vis4">
+            <div id="emavis" class="narr_vis"></div>
+        </div>
 
         <h4>STOCH</h4>
         <p>Stochastic Oscillator (STOCH) is a statistic that gives analysts an indication of the momentum of a particular stock.  It is calculated by subtracting the lowest price over a time interval from the current close and then dividing this result by the range of the time interval.  A simple moving average over a specified time interval is applied to these percentages to generate the statistic.  This statistic shows when a stock is making large movements in the upward or downward direction.

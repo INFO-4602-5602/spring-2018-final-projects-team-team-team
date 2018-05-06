@@ -528,9 +528,13 @@ function make_plot() {
 		}
 
     /* redraw indicators */
-    for (var index = 0; index < 5; index++ ) {
+    for (var index = 0; index < 5; index++) {
         if (tech_inds[index] != 0) {
             remove_indicator(stat_list[index], index);
+        }
+    }
+    for (var index = 0; index < 5; index++) {
+        if (tech_inds[index] != 0) {
             add_indicator(stat_list[index], index);
         }
     }
@@ -596,7 +600,6 @@ function getSVGWithLabelsAndAxes(element, x_axis, y_axis, label, x_label, y_labe
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text(y_label);      
-
 
     return svg;
 }
