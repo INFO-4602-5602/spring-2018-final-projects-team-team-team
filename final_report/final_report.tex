@@ -237,10 +237,16 @@ take much more time to implement.
 	\caption{This depiction shows examples of two of the different technical indicator graphs that are drawn below the stock price graph if their respective option is selected in the menu.}
 \end{figure}
 
-
-
-
 \section{Discussion}
+This project confirmed for us the prevailing wisdom that stock prediction, at least with traditional technical analysis methods, is of questionable value. We do not include a discussion of how to evaluate companies in terms of business fundamentals, but this is likely the way to go in our opinion! 
+
+In terms of visualizations, we learned a lot about what works and what doesn't work when creating this project. We also learned the importance of a plan/methodology, such as the Five-design-sheet methodology, before starting on prototyping \cite{FDS}! Ensembling and pop-out techniques like trendlines, summarizations and averages, and clever use of color are invaluable in making stock information interpretable. We also want to emphasize the value of a narrative, not just for the consumer of the visualization, but for the creators to help crystalize our understanding better as well.
+
+In terms of engineering takea-aways, we are not D3 experts, so it was a little clunky working with such a large amount of time-series data here. We ended up preprocessing much of it to deal with the engineering challenges, letting us piece-wise load individual stock data and sidestepping dynamic big-data summarizing and scaling issues.  We would also like to note how we have grown to appreciate the data-driven architecture of D3 when building these visualizations from a software-engineering point of view Finally, we have definitely developed an appreciate all of the careful thought that goes into the design and construction of an effective visualization!!
+
+\subsection{Future Work}
+If we had more resources, we would think there are some interesting ways to extend this project. We could highlight some of the predictions that the technical analysis makes, annotate important historical events, and display some metric of accuracy for how good following any one investment strategy would have worked out for a hypothetical investor starting in the past. This would also play into the narrative aspect quite well! But we are happy with what we produced here, which we believe provides any reader with a solid starting-point for understanding these opaque financial metrics.
+
 
 
 %\bibliographystyle{abbrv}
