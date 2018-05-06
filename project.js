@@ -2,11 +2,18 @@
 // CONSTANTS 
 ////////////////////////////////////////////////////////////////////////////////
 var data_path = "./data";
+var tech_inds = [0, 0, 0, 0, 0];
+//stoch: slowk, slowd
+var tech_inds_stats = ["MACD", "SMA", "SlowK", "EMA", "RSI"];
+var stat_list = ["MACD", "SMA", "STOCH", "EMA", "RSI"];
+var ind_elem_id = ["#macd_plot", null, "#stoch-rsi_plot", null, "#stoch-rsi_plot"];
+var indicator_colors = ["#F1C40F", "#8E44AD", "#3498DB", "#1ABC9C", "#E67E22"];
+var ind_ranges = [[-5,5], [0,0], [0,100], [0,0], [0,100]];
 
 // set the dimensions and margins of the graph
 var margin = {top: 80, right: 80, bottom: 80, left: 80};
 var width = 800 - margin.left - margin.right;
-var height = 800 - margin.top - margin.bottom;
+var height = 600 - margin.top - margin.bottom;
 
 var colorScale = d3.scaleOrdinal(d3['schemeCategory20c']);
 
@@ -116,7 +123,7 @@ function get_selected(type) {
 // - days: list of days, eg '13', the days we have data for a given year, month,
 // and ^
 ////////////////////////////////////////////////////////////////////////////////
-function get_path(type, start) {
+function get_path(type, start, stat_type="TIME_SERIES_DAILY_ADJUSTED", stat=null) {
     var path = data_path;
     path +='/';
 
@@ -131,12 +138,17 @@ function get_path(type, start) {
     if (type == 'stat-types-list')
         return path + 'stat_types.json';
 
-    path += get_selected('stat-type') + '/'
+    //path += get_selected('stat-type') + '/'
+    path += stat_type + '/';
 
     if (type == 'stats-list')
         return path + 'stats_list.json';
 
-    path += get_selected('stat');
+    if (stat == null) {
+        path += get_selected('stat');
+    } else {
+        path += stat;
+    }
 
     if (type == 'data')
         return path + '.csv';
@@ -168,6 +180,7 @@ function set_companies() {
         add_options_to_selectbox('company-select', companies_list);
     }).done(function () {
         set_stat_types();
+        //set_stats_list();
     });
 }
 
@@ -178,7 +191,7 @@ function set_companies() {
 ////////////////////////////////////////////////////////////////////////////////
 function set_stat_types() {
     return $.getJSON(get_path('stat-types-list'), function(stat_types_list) {
-        add_options_to_selectbox('stat-type-select', stat_types_list);
+        //add_options_to_selectbox('stat-type-select', stat_types_list);
     }).done(function() {
         set_stats_list();
     });
@@ -328,16 +341,70 @@ function add_trendline(data) {
 set_companies();
 set_trendline_list();
 
+function remove_indicator(stat_type, index) {
+    if (ind_elem_id[index] !== null) {
+        d3.select(ind_elem_id[index]).selectAll("svg").remove();
+    } else {
+        svg.selectAll("." + stat_type)
+            .remove()
+    }
+}
+
+function add_indicator(stat_type, index) {
+    var company = get_selected('company');
+    var stat = get_selected('stat');
+    var start = get_date_range(true);
+    var end = get_date_range(false);
+    var path = get_path('data', null, stat_type, tech_inds_stats[index]);
+
+    console.log(path);
+    elem = ind_elem_id[index];
+    if (ind_elem_id[index] !== null) {
+        draw_ind_plot(path, stat_type, index, start, end);
+        return;
+    }
+
+    d3.csv(path, function(error, data) {
+        data.forEach(function(d) {
+            d.date = parseTime(d.date);
+            d.value = +d.value;
+        });
+
+      /* filter data by date */
+      var parsed_start = parseTime(start);
+      var parsed_end = parseTime(end);
+      var filtered = [];
+      for (var i in data) {
+          var point = data[i];
+          if (point.date > parsed_start && point.date < parsed_end) {
+              filtered.push(point);
+          }
+      }
+
+      // plot a linegraph
+      var color = indicator_colors[index];
+      var line = d3.line()
+                    .x(getScaledX)
+                    .y(getScaledY);
+      svg.append("path")
+          .attr("class", stat_type)
+          .datum(filtered)
+          .attr("fill", "none")
+          .attr("stroke", color)
+          .attr("stroke-linejoin", "round")
+          .attr("stroke-linecap", "round")
+          .attr("stroke-width", 4.0)
+          .attr("d", line);
+    });
+}
+
 // do actual drawing here
 function make_plot() {
     var company = get_selected('company');
     var stat = get_selected('stat');
-
     var start = get_date_range(true);
     var end = get_date_range(false);
-
     var path = get_path('data');
-    console.log(path)
 
     d3.csv(path, function(error, data) {
         data.forEach(function(d) {
@@ -459,6 +526,15 @@ function make_plot() {
 				.attr("d", lineFunction);
 
 		}
+
+    /* redraw indicators */
+    for (var index = 0; index < 5; index++ ) {
+        if (tech_inds[index] != 0) {
+            remove_indicator(stat_list[index], index);
+            add_indicator(stat_list[index], index);
+        }
+    }
+
     });
 }
 
@@ -524,3 +600,94 @@ function getSVGWithLabelsAndAxes(element, x_axis, y_axis, label, x_label, y_labe
 
     return svg;
 }
+
+function handleMenuClick(stat_type, index) {
+    //d3.selectAll(".scatterplotMenu li")
+    //  .style("background-color", "white");
+    console.log(stat_type);
+    if (tech_inds[index] == 0) {
+        // turn on
+        d3.select("#" + stat_type)
+          .style("background-color", indicator_colors[index]);
+        tech_inds[index] = 1;
+        add_indicator(stat_type, index);
+    } else {
+        // turn off
+        d3.select("#" + stat_type)
+          .style("background-color", "white");
+        tech_inds[index] = 0;
+        remove_indicator(stat_type, index);
+    }
+}
+
+function createScatterPlotMenu() {
+    // select items by id
+    var menu = d3.select(".scatterplotMenu");
+    menu.select("#MACD")
+      .on("click", function() { handleMenuClick("MACD", 0); });
+    menu.select("#SMA")
+      .on("click", function() { handleMenuClick("SMA", 1); });
+    menu.select("#STOCH")
+      .on("click", function() { handleMenuClick("STOCH", 2); });
+    menu.select("#EMA")
+      .on("click", function() { handleMenuClick("EMA", 3); });
+    menu.select("#RSI")
+      .on("click", function() { handleMenuClick("RSI", 4); });
+}
+
+function draw_ind_plot(path, stat_type, index, start, end) {
+    var loc_margin = {top: 60, right: 80, bottom: 60, left: 80};
+    var loc_width = 800 - loc_margin.left - loc_margin.right;
+    var loc_height = 300 - loc_margin.top - loc_margin.bottom;
+    if (stat_type === "MACD") {
+        var loc_height = 200 - loc_margin.top - loc_margin.bottom;
+    }
+    var locx = d3.scaleTime().range([0, loc_width]);
+    var locy = d3.scaleLinear().range([loc_height, 0]);
+    var locGetScaledX = function(d) { return locx(d[xVal]); };
+    var locGetScaledY = function(d) { return locy(d[yVal]); };
+
+    /* select html element */
+    var element = ind_elem_id[index];
+
+    d3.csv(path, function(error, data) {
+        data.forEach(function(d) {
+            d.date = parseTime(d.date);
+            d.value = +d.value;
+        });
+
+        /* filter data by date */
+        var parsed_start = parseTime(start);
+        var parsed_end = parseTime(end);
+        var filtered = [];
+        for (var i in data) {
+            var point = data[i];
+            if (point.date > parsed_start && point.date < parsed_end) {
+                filtered.push(point);
+            }
+        }
+
+        locx.domain(d3.extent(filtered, getX));
+        locy.domain(ind_ranges[index]);
+        //y.domain(d3.extent(filtered, getY));
+        locsvg = getSVGWithLabelsAndAxes(element, locx, locy, null, "Date", stat_type, loc_margin, loc_width, loc_height, stat_type + "_svg");
+        //d3.select(ind_elem_id[index]).append(locsvg);
+
+        // plot a linegraph
+        var color = indicator_colors[index];
+        var line = d3.line()
+                      .x(locGetScaledX)
+                      .y(locGetScaledY);
+        locsvg.append("path")
+            .attr("class", stat_type)
+            .datum(filtered)
+            .attr("fill", "none")
+            .attr("stroke", color)
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("stroke-width", 4.0)
+            .attr("d", line);
+    });
+}
+
+createScatterPlotMenu();

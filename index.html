@@ -25,13 +25,24 @@
 
         <h3>Play time</h3>
         <p>Here's a free-form playground! Now go explore.</p>
+        <p>Click the menu below to turn on and off technical indicators.</p>
+        <div class="scatterplotMenu">
+            <p>Menu: Pick a dataset to display.</p>
+            <ul class="scatterplotMenuList">
+                <li id="MACD">MACD</li>
+                <li id="SMA">SMA</li>
+                <li id="STOCH">STOCH</li>
+                <li id="EMA">EMA</a></li>
+                <li id="RSI">RSI</a></li>
+            </ul>
+            <br /><br /><br />
+        </div>
+
         <div id="vis2">
             <div id="visualization"> </div>
             <div id="vis2-buttons">
                 <p>Company</p>
                 <select id="company-select" onchange=set_stat_types()></select>
-                <p>Stat Type</p>
-                <select id="stat-type-select" onchange=set_stats_list()></select>
                 <p>Stat</p>
                 <select id="stat-select" onchange=set_year(true);set_year(false);></select>
 
@@ -42,8 +53,7 @@
 
                 <p>end</p>
                 <select id="end-years-select" onchange=set_month(false)></select>
-                <select id="end-months-select" onchange=set_day(false)></select>
-                <select id="end-days-select" onchange=make_plot()></select>
+                <select id="end-months-select" onchange=set_day(false)></select> <select id="end-days-select" onchange=make_plot()></select>
 
                 <p>Add trendline</p>
                 <select id="trendline-select" onchange=update_trendline(value)>
@@ -53,6 +63,8 @@
 				</select>
             </div>
         </div>
+            <div id="macd_plot" class="inline"> </div>
+            <div id="stoch-rsi_plot" class="inline"> </div>
     </div>
 
         <div id="tooltip">
