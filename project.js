@@ -497,7 +497,7 @@ function make_plot() {
             .attr("cx", getScaledX)
             .attr("cy", getScaledY)
             .attr("r", 2)
-			.style("fill", "blue")
+			.style("fill", color)
 
 		// Add trendline
 		if (line_select == "none") { 
@@ -691,3 +691,4 @@ function draw_ind_plot(path, stat_type, index, start, end) {
 }
 
 createScatterPlotMenu();
+

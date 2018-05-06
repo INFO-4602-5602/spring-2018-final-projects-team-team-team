@@ -1,0 +1,35 @@
+\begin{thebibliography}{1}
+
+\bibitem{alpha}
+Alpha vantage api.
+\newblock \url{https://www.alphavantage.co/documentation/}.
+\newblock Accessed: 2018-03-10.
+
+\bibitem{tech}
+Cambridge technical analysis of stock prices.
+\newblock \url{https://www.mrao.cam.ac.uk/~mph/Technical_Analysis.pdf}.
+\newblock Accessed: 2018-05-03.
+
+\bibitem{invest}
+Investopedia.
+\newblock \url{https://www.investopedia.com}.
+\newblock Accessed: 2018-03-10.
+
+\bibitem{yahoo}
+Yahoo finance visualization tool.
+\newblock \url{https://finance.yahoo.com/quote/%5EGSPC?p=%5eGSPC}.
+\newblock Accessed: 2018-04-28.
+
+\bibitem{simuic}
+K.~Šimunić.
+\newblock Visualization of stock market charts.
+\newblock In {\em In Proceedings from the 11th International Conference in
+  Central Europe on Computer Graphics, Visualization and Computer Vision 2003
+  (2003), Plzen-Bory (CZ), 2003}, 2003.
+
+\bibitem{article}
+J.~Joseph and I.~Indratmo.
+\newblock Visualizing stock market data with self-organizing map.
+\newblock pp. 488--491, 01 2013.
+
+\end{thebibliography}
