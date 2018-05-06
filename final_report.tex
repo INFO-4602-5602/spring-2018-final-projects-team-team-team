@@ -105,18 +105,7 @@
 %}
 
 %% Abstract section.
-\abstract{Duis autem vel eum iriure dolor in hendrerit in vulputate
-velit esse molestie consequat, vel illum dolore eu feugiat nulla
-facilisis at vero eros et accumsan et iusto odio dignissim qui blandit
-praesent luptatum zzril delenit augue duis dolore te feugait nulla
-facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
-aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper
-suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem
-vel eum iriure dolor in hendrerit in vulputate velit esse molestie
-consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et
-accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
-delenit augue duis dolore te feugait nulla facilisi.%
+\abstract{The goal of this final project was to create a stock price analysis visualization tool that would aid individuals in making informed decisions about the stocks they buy and sell.  We created a webpage that informs a novice reader about stock price technical indicators in a narrative format.  It also allows the user to interact with two different visualizations.  One visualization introduces the technical indicators and demonstrates their relationships between each other.  The second visualization gives the user complete control in generating price and technical indicator graphs of a stock price dataset. 
 } % end of abstract
 
 %% ACM Computing Classification System (CCS). 
@@ -150,23 +139,74 @@ delenit augue duis dolore te feugait nulla facilisi.%
 
 \maketitle
 
-%% \section{Introduction} %for journal use above \firstsection{..} instead
-This template is for papers of VGTC-sponsored conferences which are \emph{\textbf{not}} published in a special issue of TVCG.
+Stock trading can be very risky business when one is uneducated about the stocks he/she is buying.  Technical indicators have been made in the past to give traders an indication as to when a stock/how much will rise or fall.  Visualization tools have also been made, but many of them are inflexible and only contain a few technical analysis functions. The lack of a robust and extensive stock price data visualization tool is the motivation for this project.
+
+Our goal was to provide a user interface that would allow a user to interact with a large set of stock price data and overlay different technical indicators on top of time series data.  We realized that if we were to employ all of these technical indicators, there would be a good chance that amateur and novice traders/analysts would be unfamiliar with the characteristics of these indicators.  In order to address this, we decided to expand the scope of our project to incorporate a learning experience where the user would scroll through a short lesson on each of the technical indicators before accessing our visualization tool.
 
 \section{Related Work}
+Stock data visualizations are a critical part of financial trading. Without interpretable
+visualizations, a trader may miss a new trend as it forms when it would have been obvious with the right
+tools. Yahoo is one of many sites out there that provide convenient and powerful stock tools. Without
+the need of an account, anyone can go to finance.yahoo.com \cite{yahoo} and view relevant trading information
+about any stock. This was the leading inspiration behind our visualization, as well as many others as we
+discovered in our research. We wanted to duplicate the basic functionality of that site with our own spin
+and organizational requirements. The foundation of this was the ability to display any stock’s value over
+time in a consistent view. These views would be supplemented by the other functions we implemented
+to analyze the trends.
+There are many resources openly available online that discuss methods of how to best analyze
+stock data. One of these that was extremely useful was the Technical Analysis from the University of
+Cambridge \cite{tech}. This is a 183 page analysis of various stock indicators and trends. In this document, they
+talk extensively about the various technical aspects of stock modeling, but they also show and discuss
+many ways to visualize this data. In many ways, this was a great technical document to dive into, but
+most of these methods simply generate various two-dimensional plots.
+Some interesting multi-dimensional work has been done by Joseph and Indratmo in their paper
+Visualizing Stock Market Data with Self-Organizing Map \cite{simuic}. Instead of the traditional two dimensional
+scatterplots, they used an unsupervised learning algorithm to plot and group stocks onto a three
+dimensional grid, where stocks are organized two dimensionally with the third dimension is proportional
+to the company's market capitalization. The paper claims serious benefits from clustering stocks
+together and treating stock clusters as individual nodes when making trading decisions. It’s an intriguing
+look into the use of more than two dimensions for stock visualization, but ultimately they compared
+their results to the Yahoo Finance as well, as it is truly such a robust tool. Due to this, we will try not to
+include multi-dimensional visualizations in our work here.
+From a user’s perspective, there may be reason to view stocks at an individual level or at a more
+global level, however, where the general trend of the stock market is just as important. This is what the
+self-organizing map from Joseph and Indratmo’s was aiming to do, but the paper from Simunic \cite{article}
+shows that similar results can be found by simply using a heatmap and two dimensional space to reflect
+the trends across all stocks plotted in that space. Each plot represents a grid in the overall visualization,
+with zooming functionality for broad market views, or more specific stock trends. This was a much more
+favorable style of visualization than the Joseph paper, but again they compared their results to the
+functionality provided by the Yahoo Finance site, reiterating just how powerful and pervasive that
+format is. Certain aspects from this visualization would be great to incorporate, however, as displaying
+more than one stock at a time is a common need.
 
+Even after more extensive research, we were left surprised with how good the Yahoo model
+actually is, and therefore were not ashamed to emulate it as much as necessary to get the results we
+desired. 
 \section{Design Process}
+\subsection{Data Wrangling}
+We used the AlphaVantage API \cite{alpha} in order to obtain real-time stock data. We made queries to
+capture data for six different stocks from the time of the stock’s inception. We captured the stocks’
+price data through a time series daily adjusted module which returns the open, close, high, low, volume,
+and adjusted close prices of an array of dates. We then used a variety of other modules to capture SMA,
+EMA, STOCH, RSI, MACD technical indicators. We decided upon these indicators after researching commonly used analysis tools on investopedia.com \cite{invest}.  All of this data was stored into a python dictionary and then
+outputted into json files. The json files are read in with javascript and displayed using D3.  We chose to work with D3 because we were very comfortable with making two dimensional plots out of loaded json data and as a programmer, you have a lot of control over particular aspects of the data.
+
+\subsection{Visualization 1: Learning Tool}
+
+\subsection{Visualization 2: Analysis Tool}
+After our research, we knew that the most practical visualization tools used two dimensional scatter/line plots in order to plot time series data.  We decided to use both for all of the different data types we gathered. We wanted to give the user the ability to drill down to any type of technical indicator or price and plot a range of data from the dataset.  This is done by selecting categorical data in option boxes next to the visualization.  
+
+There is also the option
+
+\begin{figure}[h]
+	\centering
+	%\includegraphics[scale=0.65]{vis2}
+	%\caption{}
+\end{figure}
+
 
 \section{Discussion}
-\section{Conclusion}
 
-
-
-
-%% if specified like this the section will be committed in review mode
-\acknowledgments{
-The authors wish to thank A, B, and C. This work was supported in part by
-a grant from XYZ.}
 
 %\bibliographystyle{abbrv}
 \bibliographystyle{abbrv-doi}

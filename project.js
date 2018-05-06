@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// CONSTANTS 
+// CONSTANTS
 ////////////////////////////////////////////////////////////////////////////////
 var data_path = "./data";
 
@@ -273,7 +273,7 @@ function update_trendline(selection) {
 	make_plot();
 }
 
-function add_trendline(data) { 
+function add_trendline(data) {
 	var x_mean = 0;
 	var y_mean = 0;
 	var term1 = 0;
@@ -371,7 +371,7 @@ function make_plot() {
 
         svg = getSVGWithLabelsAndAxes('#visualization', x, y, title, "date", stat, margin, width, height, "visvis");
 
-        // gridlines code credit to: 
+        // gridlines code credit to:
         // https://bl.ocks.org/d3noob/c506ac45617cf9ed39337f99f8511218
         // gridlines in x axis function
         function make_x_gridlines() {
@@ -409,7 +409,7 @@ function make_plot() {
           color = "green";
         }
 
-        /* 
+        /*
         // plot a linegraph
         var line = d3.line()
                       .x(getScaledX)
@@ -430,10 +430,10 @@ function make_plot() {
             .attr("cx", getScaledX)
             .attr("cy", getScaledY)
             .attr("r", 2)
-			.style("fill", "blue")
+			.style("fill", color)
 
 		// Add trendline
-		if (line_select == "none") { 
+		if (line_select == "none") {
 			svg.append("path")
 				.datum(trendline)
 				.attr("clas", "line")
@@ -471,7 +471,7 @@ function make_plot() {
 // 4. a graph label
 // 5. an x label
 // 6. an y label
-// 
+//
 // it does the gruntwork of:
 // - making the svg the right size
 // - adding the x- and y-axes to the graph
@@ -495,19 +495,19 @@ function getSVGWithLabelsAndAxes(element, x_axis, y_axis, label, x_label, y_labe
 
     if (label) {
         svg.append("text")
-            .attr("x", (width / 2))             
+            .attr("x", (width / 2))
             .attr("y", 0 - (margin.top / 3))
-            .attr("text-anchor", "middle")  
-            .style("font-size", "16px") 
-            .style("text-decoration", "underline")  
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("text-decoration", "underline")
             .text(label);
     }
 
     // credit for fancy axis labels: https://bl.ocks.org/d3noob/23e42c8f67210ac6c678db2cd07a747e
     // text label for the x axis
-    svg.append("text")             
+    svg.append("text")
         .attr("transform",
-                "translate(" + (width/2) + " ," + 
+                "translate(" + (width/2) + " ," +
                             (height + margin.top - 20) + ")")
         .style("text-anchor", "middle")
         .text(x_label);
@@ -519,7 +519,7 @@ function getSVGWithLabelsAndAxes(element, x_axis, y_axis, label, x_label, y_labe
         .attr("x", 0 - (height / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text(y_label);      
+        .text(y_label);
 
 
     return svg;
