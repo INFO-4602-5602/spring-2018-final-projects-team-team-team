@@ -5,6 +5,9 @@
 - Kenneth (Hunter) Wapman
 
 ## Contributions:
+# Josiah:
+I did all of the data wrangling for the project.  I wrote up the sections for the different technical indicators in the index.html and wrote half of the paper.
+
 # Chris:
 I implemented the line fitting drop down menu and functionality for this project. I implemented
 a linear best-fit line to show any overall trends, as well as a curve fit via d3's curveLinear fit.
