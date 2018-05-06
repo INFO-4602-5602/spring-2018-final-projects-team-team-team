@@ -2,17 +2,17 @@ body {
 }
 
 #tooltip {
-  opacity: 0; 
-  position: absolute; 
-  top: 0; 
-  right: 0; 
-  text-align: center; 
-  margin: 0; 
-  padding: 0em; 
-  background:#fff; 
-  border: 1px; 
-  border-style: solid; 
-  border-color:black; 
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: center;
+  margin: 0;
+  padding: 0em;
+  background:#fff;
+  border: 1px;
+  border-style: solid;
+  border-color:black;
   border-radius: 5px;
   width:8em
 }
@@ -23,6 +23,25 @@ body {
 
 #vis2 {
     display: flex;
+}
+
+#vis1 {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+#final_project {
+    text-align: center;
+}
+
+#tech_inds {
+    text-align: center;
+}
+
+#stock_market {
+    text-align: center;
 }
 
 #vis2-buttons {
